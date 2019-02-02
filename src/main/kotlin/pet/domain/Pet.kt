@@ -52,7 +52,7 @@ class Pet() {
     }
 
     @CommandHandler
-    fun readyForTame(cmd: PetReadyForTameCommand) {
+    fun on(cmd: PetReadyForTameCommand) {
         when (status) {
             Status.INCOME, Status.MEDICAL_EXAMINATION -> {
                 AggregateLifecycle.apply(PetReadyForTame(cmd.petId))

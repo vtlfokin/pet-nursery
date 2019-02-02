@@ -1,5 +1,6 @@
 package com.example
 
+import com.example.pet.domain.saga.IncomeMedicalExamination
 import org.axonframework.common.transaction.NoTransactionManager
 import org.axonframework.config.Configuration
 import org.axonframework.config.Configurer
@@ -10,6 +11,9 @@ import org.axonframework.eventhandling.tokenstore.jdbc.PostgresTokenTableFactory
 import org.axonframework.eventhandling.tokenstore.jdbc.TokenSchema
 import org.axonframework.eventsourcing.eventstore.jdbc.JdbcEventStorageEngine
 import org.axonframework.eventsourcing.eventstore.jdbc.PostgresEventTableFactory
+import org.axonframework.modelling.saga.repository.SagaStore
+import org.axonframework.modelling.saga.repository.jdbc.JdbcSagaStore
+import org.axonframework.modelling.saga.repository.jdbc.PostgresSagaSqlSchema
 import org.axonframework.serialization.xml.XStreamSerializer
 import pet.domain.Pet
 import java.sql.DriverManager
@@ -54,9 +58,24 @@ fun Configurer.registerEventProcessing() {
 
         store
     }
+    registerComponent(SagaStore::class.java) {
+        val store = JdbcSagaStore.builder()
+            .sqlSchema(PostgresSagaSqlSchema())
+            .connectionProvider {
+                DriverManager.getConnection("jdbc:postgresql://localhost:15432/nursery", "root", "root")
+            }
+            .serializer(XStreamSerializer.builder().build())
+            .build()
+
+        store.createSchema()
+
+        store
+    }
     eventProcessing {
         // Регистрация слушателей событий (для обновления read модели)
         it.registerEventHandler{ PetQueryObjectUpdater() }
         it.registerEventHandler{ VaccinationQueryObjectUpdater() }
+
+        it.registerSaga(IncomeMedicalExamination::class.java)
     }
 }
