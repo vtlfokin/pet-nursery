@@ -18,6 +18,7 @@ dependencies {
     compile("io.ktor:ktor-server-core:1.1.1")
     compile("io.ktor:ktor-server-netty:1.1.1")
     compile("org.slf4j:slf4j-simple:1.7.25")
+    compile("org.postgresql:postgresql:42.2.5")
 }
 
 tasks.withType<KotlinCompile> {
