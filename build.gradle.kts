@@ -20,6 +20,11 @@ dependencies {
     compile("org.slf4j:slf4j-simple:1.7.25")
     compile("org.postgresql:postgresql:42.2.5")
     compile("javax.inject:javax.inject:1")
+    compile("com.google.code.gson:gson:2.8.5")
+
+    testCompile("org.axonframework:axon-test:4.0.3")
+    testCompile("junit:junit:4.12")
+    testCompile("org.jetbrains.kotlin:kotlin-test-junit:1.3.11")
 }
 
 tasks.withType<KotlinCompile> {

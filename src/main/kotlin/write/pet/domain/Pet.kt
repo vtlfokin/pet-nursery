@@ -1,6 +1,6 @@
-package pet.domain
+package com.example.write.pet.domain
 
-import com.example.pet.PetReadyForTameCommand
+import com.example.write.pet.PetReadyForTameCommand
 import com.example.vaccination.Disease
 import com.example.vaccination.Vaccination
 import org.axonframework.commandhandling.CommandHandler
@@ -8,12 +8,14 @@ import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateIdentifier
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.modelling.command.AggregateRoot
-import com.example.pet.RegisterNewPetCommand
-import com.example.pet.VaccinatePetCommand
+import com.example.write.pet.RegisterNewPetCommand
+import com.example.write.pet.VaccinatePetCommand
+import org.axonframework.eventhandling.Timestamp
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.*
 
-@AggregateRoot
+@AggregateRoot(type = "Pet")
 class Pet() {
     @AggregateIdentifier
     private lateinit var petId: String
@@ -40,13 +42,13 @@ class Pet() {
             AggregateLifecycle.apply(
                 PetVaccinated(
                     cmd.petId,
-                    cmd.disease,
-                    Date()
+                    cmd.disease
                 )
             )
         } else {
             val dateFormat = SimpleDateFormat("dd.mm.yyyy HH:mm:ss")
-            throw IllegalStateException("Vaccination against ${cmd.disease.toString().toLowerCase()} already done at ${dateFormat.format(alreadyExistVaccinate.date)}")
+            throw IllegalStateException("Vaccination against ${cmd.disease.toString().toLowerCase()} already done at ${dateFormat.format(
+                Date.from(alreadyExistVaccinate.time))}")
         }
 
     }
@@ -71,8 +73,8 @@ class Pet() {
     }
 
     @EventSourcingHandler
-    fun on(event: PetVaccinated) {
-        vaccinations.add(Vaccination(event.disease, event.date))
+    fun on(event: PetVaccinated, @Timestamp time: Instant) {
+        vaccinations.add(Vaccination(event.disease, time))
     }
 
     @EventSourcingHandler
@@ -83,11 +85,15 @@ class Pet() {
     enum class Status {
         INCOME, MEDICAL_EXAMINATION, ACCEPTED, TAMED, DEAD
     }
+
+    fun isReadyForTame() = status == Status.ACCEPTED
 }
+
+data class PetId(val petId: String)
 
 //EVENTS
 data class PetRegistered(val petId: String, val name: String, val type: Species)
 
-data class PetVaccinated(val petId: String, val disease: Disease, val date: Date)
+data class PetVaccinated(val petId: String, val disease: Disease)
 
 data class PetReadyForTame(val petId: String)

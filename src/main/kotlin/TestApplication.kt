@@ -1,5 +1,6 @@
 package com.example
 
+import com.example.read.pet.PetQueryObject
 import com.example.vaccination.Disease
 import io.ktor.application.call
 import io.ktor.http.ContentType
@@ -10,123 +11,73 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import org.axonframework.eventhandling.EventHandler
-import com.example.pet.RegisterNewPetCommand
-import com.example.pet.VaccinatePetCommand
-import pet.domain.Species
-import pet.domain.PetRegistered
-import pet.domain.PetVaccinated
+import com.example.write.pet.RegisterNewPetCommand
+import com.example.write.pet.VaccinatePetCommand
+import com.example.read.vaccination.PetInVaccinationQueueRepository
+import org.axonframework.eventhandling.TrackingEventProcessor
+import com.example.write.pet.domain.Species
+import com.example.read.pet.PetQueryObjectRepository
+import com.example.read.vaccination.PetInVaccinationQueue
+import com.example.read.vaccination.VaccinationQueryObjectRepository
+import com.example.server.routing.registerCommands
+import com.example.server.routing.registerOptions
+import com.example.write.pet.domain.PetId
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import org.axonframework.serialization.json.JacksonSerializer
 import java.lang.IllegalArgumentException
 import java.util.*
 
 fun main(args: Array<String>) {
 
-    val config = buildDefaultConfiguration()
+    val axonConfig = buildDefaultConfiguration()
 
-    config.start()
+    axonConfig.start()
+
+    val gson = Gson()
 
     embeddedServer(Netty, 7000) {
         routing {
             get("/") {
                 call.respondText("Hi", ContentType.Text.Html)
             }
+            registerOptions(gson)
+
+            registerCommands(axonConfig, gson)
+
             get("/pets") {
-                call.respondText(PetQueryObjectRepository.all().toString(), ContentType.Text.Html)
+                val petsType = object : TypeToken<List<PetQueryObject>>() {}.type
+                call.respondText(
+                    gson.toJson(PetQueryObjectRepository.all(), petsType),
+                    ContentType.Application.Json
+                )
             }
-            post("/pet/register") {
-                val params = call.receiveParameters()
-                val name = params["name"]
-                val typeKey = params["type"]
+            get("/vaccinate/queue") {
+                val petsType = object : TypeToken<List<PetInVaccinationQueue>>() {}.type
 
-                if (null == name || null == typeKey) {
-                    throw Exception("Fill name and type parameters")
-                }
-
-                val id = UUID.randomUUID().toString()
-                val type = Species.valueOf(typeKey.toUpperCase())
-
-                config.commandGateway().send<Unit>(RegisterNewPetCommand(id, name, type))
-                call.respondText("{\"petId\":\"$id\"}", ContentType.Application.Json)
+                call.respondText(
+                    gson.toJson(PetInVaccinationQueueRepository.all(), petsType),
+                    ContentType.Application.Json
+                )
             }
-            post("/pet/{petId}/vaccinate/{disease}") {
-                val id = call.parameters["petId"]!!
-                val diseaseKey = call.parameters["disease"]!!
-                val disease = Disease.valueOf(diseaseKey.toUpperCase())
-
-                try {
-                    config.commandGateway().sendAndWait<Unit>(VaccinatePetCommand(id, disease))
-                    call.respondText("OK", ContentType.Text.Html)
-                } catch (exception: Exception) {
-                    when (exception) {
-                        is IllegalStateException, is IllegalArgumentException -> {
-                            call.respondText(exception.message.toString(), ContentType.Text.Html)
-                        }
-                        else -> throw exception
+            get("/vaccinate/reset") {
+                axonConfig.eventProcessingConfiguration()
+                    .eventProcessorByProcessingGroup("vaccination", TrackingEventProcessor::class.java)
+                    .ifPresent { processor ->
+                        processor.shutDown()
+                        processor.resetTokens()
+                        processor.start()
                     }
-                }
+                call.respondText("Reset done", ContentType.Text.Html)
+            }
+            get("/vaccinations") {
+                call.respondText(VaccinationQueryObjectRepository.all().toString(), ContentType.Text.Html)
             }
             get("/pet/{petId}/vaccinations") {
                 val id = call.parameters["petId"]!!
                 val list = VaccinationQueryObjectRepository.findForPet(id)
                 call.respondText(list.toString(), ContentType.Text.Html)
             }
-            get("/vaccinations") {
-                call.respondText(VaccinationQueryObjectRepository.all().toString(), ContentType.Text.Html)
-            }
         }
     }.start(true)
-}
-
-//READ
-data class PetQueryObject(val id: String, val type: Species, val name: String)
-object PetQueryObjectRepository {
-    private val list = arrayListOf<PetQueryObject>()
-
-    fun add(pet: PetQueryObject) {
-        list.add(pet)
-    }
-
-    fun all(): List<PetQueryObject> {
-        return list.toList()
-    }
-
-    fun find(id: String): PetQueryObject? {
-        return list.find { it.id == id }
-    }
-}
-
-class PetQueryObjectUpdater {
-    private val repository = PetQueryObjectRepository
-
-    @EventHandler
-    fun on(evt: PetRegistered) {
-        repository.add(PetQueryObject(evt.petId, evt.type, evt.name))
-    }
-}
-
-
-data class VaccinationQueryObject(val petId: String, val disease: Disease, val date: Date)
-object VaccinationQueryObjectRepository {
-
-    private val list = arrayListOf<VaccinationQueryObject>()
-
-    fun add(vaccination: VaccinationQueryObject) {
-        list.add(vaccination)
-    }
-
-    fun all(): List<VaccinationQueryObject> {
-        return list.toList()
-    }
-    fun findForPet(petId: String): List<VaccinationQueryObject> {
-        return list.filter { it.petId == petId }
-    }
-}
-
-class VaccinationQueryObjectUpdater {
-    private val repository = VaccinationQueryObjectRepository
-
-    @EventHandler
-    fun on(evt: PetVaccinated) {
-        repository.add(VaccinationQueryObject(evt.petId, evt.disease, evt.date))
-    }
 }

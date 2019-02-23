@@ -1,13 +1,13 @@
-package com.example.pet.domain.saga
+package com.example.write.pet.domain.saga
 
-import com.example.pet.PetReadyForTameCommand
+import com.example.write.pet.PetReadyForTameCommand
 import com.example.vaccination.Disease
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.modelling.saga.SagaEventHandler
 import org.axonframework.modelling.saga.SagaLifecycle
 import org.axonframework.modelling.saga.StartSaga
-import pet.domain.PetRegistered
-import pet.domain.PetVaccinated
+import com.example.write.pet.domain.PetRegistered
+import com.example.write.pet.domain.PetVaccinated
 import javax.inject.Inject
 
 class IncomeMedicalExamination {
@@ -26,13 +26,9 @@ class IncomeMedicalExamination {
     @SagaEventHandler(associationProperty = "petId")
     fun handle(event: PetVaccinated) {
         vaccines.add(event.disease)
-        println("IncomeMedicalExamination register vaccine from ${event.disease} for pet ${event.petId}")
 
         if (vaccines.containsAll(Disease.values().asList())) {
-            println("IncomeMedicalExamination complete for pet ${event.petId}")
-
             commandGateway!!.send<Unit>(PetReadyForTameCommand(event.petId))
-
             SagaLifecycle.end()
         }
     }

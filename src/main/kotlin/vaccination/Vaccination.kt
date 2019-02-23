@@ -1,6 +1,6 @@
 package com.example.vaccination
 
-import java.util.*
+import java.time.Instant
 
 enum class Disease {
     DISTEMPER(),
@@ -8,4 +8,4 @@ enum class Disease {
     FRENZY()
 }
 
-data class Vaccination(val disease: Disease, val date: Date)
+data class Vaccination(val disease: Disease, val time: Instant)

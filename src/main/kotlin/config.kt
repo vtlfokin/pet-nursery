@@ -1,6 +1,7 @@
 package com.example
 
-import com.example.pet.domain.saga.IncomeMedicalExamination
+import com.example.write.pet.domain.saga.IncomeMedicalExamination
+import com.example.read.vaccination.VaccinationQueueProjector
 import org.axonframework.common.transaction.NoTransactionManager
 import org.axonframework.config.Configuration
 import org.axonframework.config.Configurer
@@ -15,14 +16,20 @@ import org.axonframework.modelling.saga.repository.SagaStore
 import org.axonframework.modelling.saga.repository.jdbc.JdbcSagaStore
 import org.axonframework.modelling.saga.repository.jdbc.PostgresSagaSqlSchema
 import org.axonframework.serialization.xml.XStreamSerializer
-import pet.domain.Pet
+import com.example.write.pet.domain.Pet
+import com.example.read.pet.PetQueryObjectUpdater
+import com.example.read.vaccination.VaccinationQueryObjectUpdater
 import java.sql.DriverManager
 
-fun buildDefaultConfiguration(): Configuration = DefaultConfigurer.defaultConfiguration().apply {
-    setUpEventStore()
-    registerAggregates()
-    registerEventProcessing()
-}.buildConfiguration()
+fun buildDefaultConfiguration(): Configuration {
+    val configuration = DefaultConfigurer.defaultConfiguration().apply {
+        setUpEventStore()
+        registerAggregates()
+        registerEventProcessing()
+    }.buildConfiguration()
+
+    return configuration
+}
 
 
 fun Configurer.setUpEventStore() {
@@ -67,7 +74,7 @@ fun Configurer.registerEventProcessing() {
             .serializer(XStreamSerializer.builder().build())
             .build()
 
-        store.createSchema()
+//        store.createSchema()
 
         store
     }
@@ -75,6 +82,7 @@ fun Configurer.registerEventProcessing() {
         // Регистрация слушателей событий (для обновления read модели)
         it.registerEventHandler{ PetQueryObjectUpdater() }
         it.registerEventHandler{ VaccinationQueryObjectUpdater() }
+        it.registerEventHandler{ VaccinationQueueProjector() }
 
         it.registerSaga(IncomeMedicalExamination::class.java)
     }
