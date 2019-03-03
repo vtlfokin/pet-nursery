@@ -10,12 +10,8 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: nursery
     volumes:
-      - ~/.docker-data/volumes/nursery:/var/lib/postgresql/data
-    ports:
-      - 15432:5432
+      - ./data/pgdata:/var/lib/postgresql/data
 
   adminer:
     image: adminer
     restart: always
-    ports:
-      - 18080:8080

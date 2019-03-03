@@ -21,6 +21,7 @@ dependencies {
     compile("org.postgresql:postgresql:42.2.5")
     compile("javax.inject:javax.inject:1")
     compile("com.google.code.gson:gson:2.8.5")
+    compile("org.jetbrains.exposed:exposed:0.12.2")
 
     testCompile("org.axonframework:axon-test:4.0.3")
     testCompile("junit:junit:4.12")
