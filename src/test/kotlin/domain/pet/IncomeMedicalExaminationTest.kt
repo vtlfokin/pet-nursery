@@ -10,7 +10,7 @@ import org.axonframework.test.saga.SagaTestFixture
 import org.junit.Before
 import kotlin.test.Test
 
-class IncomeMedicalWxaminationTest {
+class IncomeMedicalExaminationTest {
     private lateinit var fixture: SagaTestFixture<IncomeMedicalExamination>
     private val sagaId = "test1"
     private val petId = "pet1"
