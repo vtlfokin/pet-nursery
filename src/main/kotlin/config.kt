@@ -1,5 +1,6 @@
 package com.example
 
+import com.example.read.FrontNotifier
 import com.example.write.pet.domain.saga.IncomeMedicalExamination
 import com.example.read.vaccination.VaccinationQueueProjector
 import org.axonframework.common.transaction.NoTransactionManager
@@ -83,6 +84,7 @@ fun Configurer.registerEventProcessing() {
         it.registerEventHandler{ PetQueryObjectUpdater() }
         it.registerEventHandler{ VaccinationQueryObjectUpdater() }
         it.registerEventHandler{ VaccinationQueueProjector() }
+        it.registerEventHandler{ FrontNotifier() }
 
         it.registerSaga(IncomeMedicalExamination::class.java)
     }
