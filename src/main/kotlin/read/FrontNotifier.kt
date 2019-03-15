@@ -1,9 +1,10 @@
 package com.example.read
 
+import com.example.read.pet.PetQueryObject
 import com.example.server.SubscribeEvent
 import com.example.subscribeRegistry
-import com.example.write.pet.domain.PetRegistered
-import com.example.write.pet.domain.PetVaccinated
+import com.example.write.pet.PetRegistered
+import com.example.write.pet.PetVaccinated
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.AllowReplay
 import org.axonframework.eventhandling.EventHandler
@@ -14,7 +15,7 @@ class FrontNotifier {
 
     @EventHandler
     fun on(evt: PetRegistered) {
-        subscribeRegistry.notify(SubscribeEvent.PET_REGISTERED, evt)
+        subscribeRegistry.notify(SubscribeEvent.PET_REGISTERED, PetQueryObject(evt.petId, evt.type, evt.name))
     }
 
     @EventHandler

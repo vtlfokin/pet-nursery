@@ -1,7 +1,7 @@
 package com.example.write.tame
 
-import com.example.write.customer.domain.Customer
-import com.example.write.pet.domain.Pet
+import write.customer.Customer
+import com.example.write.pet.Pet
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.modelling.command.Repository

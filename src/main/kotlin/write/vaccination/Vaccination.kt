@@ -1,4 +1,4 @@
-package com.example.vaccination
+package write.vaccination
 
 import java.time.Instant
 

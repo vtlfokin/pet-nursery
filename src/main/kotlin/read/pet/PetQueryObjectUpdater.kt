@@ -1,7 +1,7 @@
 package com.example.read.pet
 
 import org.axonframework.eventhandling.EventHandler
-import com.example.write.pet.domain.PetRegistered
+import com.example.write.pet.PetRegistered
 import org.axonframework.eventhandling.ResetHandler
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction

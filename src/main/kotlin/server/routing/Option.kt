@@ -1,7 +1,7 @@
 package com.example.server.routing
 
-import com.example.vaccination.Disease
-import com.example.write.pet.domain.Species
+import write.vaccination.Disease
+import write.pet.Species
 import com.google.gson.Gson
 import io.ktor.application.call
 import io.ktor.http.ContentType

@@ -1,16 +1,14 @@
-package com.example.write.pet.domain
+package com.example.write.pet
 
-import com.example.write.pet.PetReadyForTameCommand
-import com.example.vaccination.Disease
-import com.example.vaccination.Vaccination
+import write.vaccination.Disease
+import write.vaccination.Vaccination
 import org.axonframework.commandhandling.CommandHandler
 import org.axonframework.eventsourcing.EventSourcingHandler
 import org.axonframework.modelling.command.AggregateIdentifier
 import org.axonframework.modelling.command.AggregateLifecycle
 import org.axonframework.modelling.command.AggregateRoot
-import com.example.write.pet.RegisterNewPetCommand
-import com.example.write.pet.VaccinatePetCommand
 import org.axonframework.eventhandling.Timestamp
+import write.pet.Species
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*

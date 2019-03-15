@@ -1,4 +1,4 @@
-package com.example.write.pet.domain
+package write.pet
 
 enum class Species {
     CAT(),

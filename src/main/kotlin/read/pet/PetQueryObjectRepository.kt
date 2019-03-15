@@ -1,6 +1,6 @@
 package com.example.read.pet
 
-import com.example.write.pet.domain.Species
+import write.pet.Species
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 

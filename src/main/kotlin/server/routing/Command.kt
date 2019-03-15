@@ -1,10 +1,10 @@
 package com.example.server.routing
 
-import com.example.vaccination.Disease
+import write.vaccination.Disease
 import com.example.write.pet.RegisterNewPetCommand
 import com.example.write.pet.VaccinatePetCommand
-import com.example.write.pet.domain.PetId
-import com.example.write.pet.domain.Species
+import com.example.write.pet.PetId
+import write.pet.Species
 import com.google.gson.Gson
 import io.ktor.application.call
 import io.ktor.http.ContentType

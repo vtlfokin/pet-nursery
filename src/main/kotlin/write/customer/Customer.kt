@@ -1,4 +1,4 @@
-package com.example.write.customer.domain
+package write.customer
 
 import com.example.write.customer.ApproveCustomer
 import com.example.write.customer.ChangeCustomerRevenue
@@ -24,7 +24,12 @@ class Customer() {
 
     @CommandHandler
     constructor(cmd: RegisterCustomer): this() {
-        AggregateLifecycle.apply(CustomerRegistered(cmd.id, cmd.name))
+        AggregateLifecycle.apply(
+            CustomerRegistered(
+                cmd.id,
+                cmd.name
+            )
+        )
     }
 
     @CommandHandler
@@ -33,7 +38,11 @@ class Customer() {
             throw IllegalStateException("Cant approve customer without profile")
         }
         if (!approved) {
-            AggregateLifecycle.apply(CustomerApproved(id))
+            AggregateLifecycle.apply(
+                CustomerApproved(
+                    id
+                )
+            )
         }
     }
 
@@ -43,7 +52,13 @@ class Customer() {
             throw IllegalStateException("Profile Already filled")
         }
 
-        AggregateLifecycle.apply(CustomerProfileFilled(id, cmd.birthDate, cmd.revenue))
+        AggregateLifecycle.apply(
+            CustomerProfileFilled(
+                id,
+                cmd.birthDate,
+                cmd.revenue
+            )
+        )
     }
 
     @EventSourcingHandler
@@ -67,7 +82,12 @@ class Customer() {
 class CustomerProfile(@EntityId val customerId: String, private var birthDate: Date, private var revenue: Int) {
     @CommandHandler
     fun changeRevenue(cmd: ChangeCustomerRevenue) {
-        AggregateLifecycle.apply(CustomerRevenueChanged(customerId, cmd.revenue))
+        AggregateLifecycle.apply(
+            CustomerRevenueChanged(
+                customerId,
+                cmd.revenue
+            )
+        )
     }
 
     @EventSourcingHandler
@@ -80,7 +100,5 @@ class CustomerProfile(@EntityId val customerId: String, private var birthDate: D
 data class CustomerRegistered(val id: String, val name: String)
 
 data class CustomerApproved(val customerId: String)
-
 data class CustomerProfileFilled(val customerId: String, val birthDate: Date, val revenue: Int)
-
 data class CustomerRevenueChanged(val customerId: String, val revenue: Int)

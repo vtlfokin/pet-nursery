@@ -1,12 +1,12 @@
 package com.example.read.vaccination
 
-import com.example.vaccination.Disease
+import write.vaccination.Disease
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.ResetHandler
-import com.example.write.pet.domain.PetRegistered
-import com.example.write.pet.domain.PetVaccinated
-import com.example.write.pet.domain.Species
+import com.example.write.pet.PetRegistered
+import com.example.write.pet.PetVaccinated
+import write.pet.Species
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 

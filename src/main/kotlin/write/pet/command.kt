@@ -1,8 +1,8 @@
 package com.example.write.pet
 
-import com.example.vaccination.Disease
+import write.vaccination.Disease
 import org.axonframework.modelling.command.TargetAggregateIdentifier
-import com.example.write.pet.domain.Species
+import write.pet.Species
 
 data class RegisterNewPetCommand(val id: String, val name: String, val type: Species) {
     init {

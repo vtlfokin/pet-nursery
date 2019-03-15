@@ -1,11 +1,11 @@
 package domain.pet
 
-import com.example.vaccination.Disease
+import write.vaccination.Disease
 import com.example.write.pet.PetReadyForTameCommand
-import com.example.write.pet.domain.PetRegistered
-import com.example.write.pet.domain.PetVaccinated
-import com.example.write.pet.domain.Species
-import com.example.write.pet.domain.saga.IncomeMedicalExamination
+import com.example.write.pet.PetRegistered
+import com.example.write.pet.PetVaccinated
+import write.pet.Species
+import com.example.write.pet.saga.IncomeMedicalExamination
 import org.axonframework.test.saga.SagaTestFixture
 import org.junit.Before
 import kotlin.test.Test

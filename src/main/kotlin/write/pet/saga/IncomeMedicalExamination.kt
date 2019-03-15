@@ -1,13 +1,13 @@
-package com.example.write.pet.domain.saga
+package com.example.write.pet.saga
 
 import com.example.write.pet.PetReadyForTameCommand
-import com.example.vaccination.Disease
+import write.vaccination.Disease
 import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.modelling.saga.SagaEventHandler
 import org.axonframework.modelling.saga.SagaLifecycle
 import org.axonframework.modelling.saga.StartSaga
-import com.example.write.pet.domain.PetRegistered
-import com.example.write.pet.domain.PetVaccinated
+import com.example.write.pet.PetRegistered
+import com.example.write.pet.PetVaccinated
 import javax.inject.Inject
 
 class IncomeMedicalExamination {

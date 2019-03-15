@@ -1,7 +1,7 @@
 package com.example.read.vaccination
 
 import org.axonframework.eventhandling.EventHandler
-import com.example.write.pet.domain.PetVaccinated
+import com.example.write.pet.PetVaccinated
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.Timestamp
 import java.time.Instant
