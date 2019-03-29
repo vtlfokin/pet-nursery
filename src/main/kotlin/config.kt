@@ -75,7 +75,10 @@ fun Configurer.registerEventProcessing() {
             .serializer(XStreamSerializer.builder().build())
             .build()
 
-//        store.createSchema()
+        /**
+         * #FIXME при повторном запуске надо комментить, т.к. пытается создать уже существующую схему и валится
+         */
+        store.createSchema()
 
         store
     }

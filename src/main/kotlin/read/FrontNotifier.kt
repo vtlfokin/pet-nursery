@@ -15,7 +15,7 @@ class FrontNotifier {
 
     @EventHandler
     fun on(evt: PetRegistered) {
-        subscribeRegistry.notify(SubscribeEvent.PET_REGISTERED, PetQueryObject(evt.petId, evt.type, evt.name))
+        subscribeRegistry.notify(SubscribeEvent.PET_REGISTERED, evt)
     }
 
     @EventHandler

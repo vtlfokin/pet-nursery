@@ -16,7 +16,7 @@ fun Routing.registerOptions(gson: Gson) {
         get("/species") {
             call.respondText(gson.toJson(Species.values()), ContentType.Application.Json)
         }
-        get("/disease") {
+        get("/diseases") {
             call.respondText(gson.toJson(Disease.values()), ContentType.Application.Json)
         }
     }

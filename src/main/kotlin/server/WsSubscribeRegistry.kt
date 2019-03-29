@@ -40,7 +40,7 @@ class WsSubscribeRegistry {
             GlobalScope.launch {
                 it.send(
                     Frame.Text(
-                        gson.toJson(eventMessage(event, payload))
+                        gson.toJson(eventMessage(event.key, payload))
                     )
                 )
             }
@@ -53,5 +53,5 @@ enum class SubscribeEvent(val key: String) {
     PET_VACCINATED("pet.vaccinated")
 }
 
-data class eventMessage(val event: SubscribeEvent, val payload: Any)
+data class eventMessage(val eventKey: String, val payload: Any)
 

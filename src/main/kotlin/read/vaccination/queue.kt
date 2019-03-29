@@ -56,7 +56,8 @@ class VaccinationQueueProjector {
 }
 
 // Забиваем известными на данный момент болезнями
-data class PetInVaccinationQueue(val id: String, val name: String, val species: Species, val neededVaccines: HashSet<Disease> = Disease.values().toHashSet()) {
+data class PetInVaccinationQueue(val id: String, val name: String, val species: Species,
+                                 val neededVaccines: HashSet<Disease> = Disease.values().toHashSet()) {
 
     fun registerVaccination(disease: Disease) {
         neededVaccines.remove(disease)
@@ -76,7 +77,6 @@ object PetsInMedicalQueue : Table("read_pets_medical_queue") {
     val petName = varchar("pet_name", 255)
     val neededVaccines = varchar("needed_vaccines", 255)
 }
-
 
 object PetInVaccinationQueueRepository {
     init {
